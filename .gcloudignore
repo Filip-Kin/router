@@ -1,0 +1,9 @@
+node_modules/*
+src/*
+.idea/*
+.directory
+*.code-workspace
+npm-debug.log
+README.md
+.gitignore
+src/*

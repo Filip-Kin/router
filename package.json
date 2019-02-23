@@ -1,0 +1,30 @@
+{
+  "name": "router",
+  "version": "1.0.0",
+  "description": "Router and API for Kiwahosting",
+  "main": "out/init.js",
+  "scripts": {
+    "build": "tsc -b tsconfig.json",
+    "start": "node ./out/init.js",
+    "deploy": "tsc -b tsconfig.json; gcloud app deploy"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kiwahosting/router.git"
+  },
+  "keywords": [
+    "router"
+  ],
+  "author": "Kiwahosting",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/Kiwahosting/router/issues"
+  },
+  "homepage": "https://github.com/Kiwahosting/router#readme",
+  "dependencies": {
+    "@types/node": "^11.9.5",
+    "chalk": "^2.4.2",
+    "interval": "^0.1.1",
+    "typescript": "^3.3.3333"
+  }
+}
