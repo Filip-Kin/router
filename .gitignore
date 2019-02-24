@@ -4,3 +4,5 @@ out/*
 .directory
 *.code-workspace
 npm-debug.log
+package-lock.json
+config.json

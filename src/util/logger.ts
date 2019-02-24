@@ -1,4 +1,3 @@
-//import * as c from 'chalk'; // Why won't this work, IDK
 const c = require('chalk');
 const colors = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white', 'gray'];
 

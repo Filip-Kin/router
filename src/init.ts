@@ -1,7 +1,11 @@
-//import { Logger } from './util/logger'; // This won't work because System is not defined?
-let { Logger } = require('./util/logger');
-
+import { connect, query } from './util/database';
+import { Logger } from './util/logger';
 const log = new Logger('Init', 'white');
 
 log.log('Initializing Kiwahosting Router/API');
-log.log('LMAO it doesn\'t do anything yet');
+connect().then(conn => {
+    query(conn, 'SHOW TABLES;')
+    .then((rows) => { 
+        log.log(JSON.stringify(rows)); 
+    });
+});
