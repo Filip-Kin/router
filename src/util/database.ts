@@ -2,11 +2,11 @@ import { createConnection } from 'mysql';
 import { timer } from './timer';
 import { Logger } from './logger';
 const log = new Logger('SQL', 'green');
-import { load } from './config';
-let conf = load()
 let cache = {};
+let conf;
 
-export function connect() {
+export function connect(config) {
+    conf=config;
     return new Promise((resolve, reject) => {
         let conn = createConnection(conf.database);
         conn.connect((err) => {
@@ -17,6 +17,7 @@ export function connect() {
                 query(conn, sql).then();
             });
             */
+            log.log('Database connected')
             return resolve(conn);
         });
     });
