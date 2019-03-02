@@ -10,7 +10,11 @@ export function connect(config) {
     return new Promise((resolve, reject) => {
         let conn = createConnection(conf.database);
         conn.connect((err) => {
-            if (err) { log.error(err.message); return reject(err); };
+            if (err.message === 'connect ECONNREFUSED 127.0.0.1:3306') {
+                log.error('ECONNREFUSED 127.0.0.1:3306');
+                log.debug('Make sure you have your Google Cloud proxy running');
+                return reject(err);
+            } else if (err) { log.error(err.message); return reject(err); };
             /* IDK what data structure will be like yet
             // Create tables if they don't exist yet
             tables.forEach(function(sql) {
