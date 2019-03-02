@@ -31,6 +31,7 @@
     "http-proxy": "^1.17.0",
     "interval": "^0.1.1",
     "mysql": "^2.16.0",
-    "typescript": "^3.3.3333"
+    "typescript": "^3.3.3333",
+    "uuidv4": "^3.0.1"
   }
 }
