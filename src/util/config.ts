@@ -6,9 +6,9 @@ export function load() {
     const defaultConfig = {
         config_version: 1,
         database: {
-            user: 'router',
+            user: 'hosting',
             password: 'i5@8$XkplQNY9irDD^OxXt@toaEzI2Qs',
-            host: '34.73.126.181',
+            host: '35.237.107.248',
             database: 'hosting'
         },
         caching: {}
@@ -27,10 +27,16 @@ export function load() {
         });
         json = defaultConfig;
     } else {
-        json = readFileSync('./config.json').toJSON();
+        try {
+            json = JSON.parse(readFileSync('./config.json').toString());
+        } catch(err) {
+            log.error(err.message);
+        }
     }
     
-    // If software updatetd and things have been added to config
+    log.debug(JSON.stringify(json));
+
+    // If software updateted and things have been added to config
     // Make a new config file and tell user to fix
     if (defaultConfig.config_version > json['config_version']) {
         log.warn('See updated config in config.json.new, many issues will occur until config is updated');

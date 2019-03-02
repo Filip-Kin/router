@@ -8,4 +8,6 @@ connect().then(conn => {
     .then((rows) => { 
         log.log(JSON.stringify(rows)); 
     });
+}).catch(err => {
+    log.error(err.message);
 });
