@@ -1,4 +1,4 @@
-//import * as c from 'chalk'; // Why won't this work, IDK
+//import * as c from 'chalk';
 const c = require('chalk');
 const colors = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white', 'gray'];
 
@@ -16,20 +16,31 @@ export class Logger {
         }
     }
 
-    public debug = (msg: string) => {
-        let prefix = c.grey('[')+c[this.color](this.prefix)+c.grey('] ');
-        console.debug(prefix+msg);
-    };
     public error = (msg: string) => {
-        let prefix = c.red.bold('[')+c[this.color](this.prefix)+c.red.bold('] ');
-        console.error(prefix+msg);
+        let prefix = c.bold.red('[')+c.bold[this.color](this.prefix)+c.bold.red('] ');
+        console.error(prefix+c.bold[this.color](msg));
     };
     public warn = (msg: string) => {
-        let prefix = c.orange.bold('[')+c[this.color](this.prefix)+c.orange.bold('] ');
-        console.warn(prefix+msg);
+        let prefix = c.bold.yellow('[')+c.bold[this.color](this.prefix)+c.bold.yellow('] ');
+        console.warn(prefix+c.bold[this.color](msg));
     };
     public log = (msg: string) => {
         let prefix = c.white('[')+c[this.color](this.prefix)+c.white('] ');
-        console.log(prefix+msg);
+        console.log(prefix+c[this.color](msg));
     };
+    public debug = (msg: string) => {
+        let prefix = c.grey('[')+c[this.color](this.prefix)+c.grey('] ');
+        console.debug(prefix+c[this.color](msg));
+    };
+}
+
+export const test = () => {
+    for (let color of colors) {
+        let log = new Logger('test', color);
+        log.debug(color);
+        log.log(color);
+        log.warn(color);
+        log.error(color);
+    }
+    return true;
 }
