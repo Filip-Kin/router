@@ -2,18 +2,18 @@ import { existsSync, readFileSync, writeFile } from 'fs';
 import { Logger } from './logger';
 const log = new Logger('Config', 'yellow');
 
-export function load() {
-    const defaultConfig = {
-        config_version: 1,
-        database: {
-            user: 'hosting',
-            password: 'i5@8$XkplQNY9irDD^OxXt@toaEzI2Qs',
-            host: '127.0.0.1',
-            database: 'hosting'
-        },
-        caching: {}
-    };
-    
+const globalDefaultConfig = {
+    config_version: 1,
+    database: {
+        user: 'hosting',
+        password: 'i5@8$XkplQNY9irDD^OxXt@toaEzI2Qs',
+        host: '127.0.0.1',
+        database: 'hosting'
+    },
+    caching: {}
+};
+
+export function load(defaultConfig=globalDefaultConfig, file='config.json') {  
     let json = defaultConfig;
     
     // If file doesn't exist, make it exist
@@ -59,3 +59,7 @@ export function load() {
         caching: caching
     };
 }
+
+export const test = (sm) => {
+    load({config_version: 1});
+};
