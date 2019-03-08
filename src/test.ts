@@ -4,6 +4,7 @@ const args = cla([{name: 'module', alias: 'm', type: String},{name: 'submodule',
 let modules = {};
 let results = {};
 const load = {
+    'config': './util/config',
     'logger': './util/logger',
     'timer': './util/timer',
     'api': './api',
