@@ -10,7 +10,7 @@ export function connect(config) {
     return new Promise((resolve, reject) => {
         let conn = createConnection(conf.database);
         conn.connect((err) => {
-            if (err.message === 'connect ECONNREFUSED 127.0.0.1:3306') {
+            if (err && err.message === 'connect ECONNREFUSED 127.0.0.1:3306') {
                 log.error('ECONNREFUSED 127.0.0.1:3306');
                 log.debug('Make sure you have your Google Cloud proxy running');
                 return reject(err);
