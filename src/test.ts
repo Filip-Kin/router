@@ -10,18 +10,20 @@ const load = {
     'api': './api',
     'router': './router'
 };
-
-for (let testModule in load) {
-    if (args.module === testModule || args.module === 'all') {
-        try {
-            console.log('\nTesting '+testModule);
-            modules[testModule] = require(load[testModule]);
-            results[testModule] = modules[testModule].test(args.submodule);
-        } catch(err) {
-            console.error(err.message);
-            results[testModule] = null;
+async function test() {
+    await Object.keys(load).forEach(async (testModule) => {
+        if (args.module === testModule || args.module === 'all') {
+            try {
+                console.log('\nTesting '+testModule);
+                modules[testModule] = require(load[testModule]);
+                results[testModule] = await modules[testModule].test(args.submodule);
+            } catch(err) {
+                console.error(err.message);
+                results[testModule] = null;
+            }
         }
-    }
-}
+    });
 
-console.log(results);
+    console.log(results);
+}
+test();
