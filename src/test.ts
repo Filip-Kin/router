@@ -12,7 +12,7 @@ const load = {
 };
 
 for (let testModule in load) {
-    if (args.module === testModule) {
+    if (args.module === testModule || args.module === 'all') {
         try {
             console.log('\nTesting '+testModule);
             modules[testModule] = require(load[testModule]);
