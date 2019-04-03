@@ -3,7 +3,7 @@ import { Logger } from './logger';
 const log = new Logger('Config', 'yellow');
 
 const globalDefaultConfig = {
-    config_version: 4,
+    config_version: 5,
     domain: 'kiwahosting.com',
     ports: {
         router: 80,
