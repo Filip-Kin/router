@@ -8,22 +8,25 @@ let log = new Logger('API:auth', 'cyan');
 export const auth = {
     signup: {
         post: (req, res, conn) => {
-           if (!requireInput(req.body, {password: 64, email: 255, firstName: 255, lastName: 255})) {
-               log.debug('Rejecting POST /auth/signup: 1');
-               res.send({status: 0, error: 1});
-               timer(req['start'], 'Request took');
-               return;
-           }
-           let id = uuid();
-           log.debug('Creating user with uuid: '+id);
-           query(conn, "INSERT INTO `users`"+
-            "(`uuid`, `firstName`, `lastName`, `email`, `phone`, `password`, `signup`, `lastLogin`) VALUES "+
-            `('${id}', '${req.body.firstName}', '${req.body.lastName}', '${req.body.email}', NULL, `+
-            `'${req.body.password}', NOW(), NULL);`).then(() => {
+            if (!requireInput(req.body, {password: 64, email: 255, firstName: 255, lastName: 255})) {
+                // /auth/signup 1 = Invalid Request
+                log.debug('Rejecting POST /auth/signup: 1');
+                res.send({status: 0, error: 1});
+                timer(req['start'], 'Request took');
+                return;
+            }
+            let id = uuid();
+            log.debug('Creating user with uuid: '+id);
+            query(conn, "INSERT INTO `users`"+
+             "(`uuid`, `firstName`, `lastName`, `email`, `phone`, `password`, `signup`, `lastLogin`) VALUES "+
+             `('${id}', '${req.body.firstName}', '${req.body.lastName}', '${req.body.email}', NULL, `+
+             `'${req.body.password}', NOW(), NULL);`).then(() => {
+                // /auth/signup 0 = Successful
                 res.send({status: 1})
                 log.debug('Resolving POST /auth/signup: 0');
                 timer(req['start'], 'Request took');
             }).catch(err => {
+                // /auth/signup 2 = SQL Error (Unknown)
                 log.debug('Rejecting POST /auth/signup: 2');
                 res.send({status: 0, error: 2})
                 timer(req['start'], 'Request took');
@@ -32,6 +35,7 @@ export const auth = {
     },
     verify: {
         post: (req, res, conn) => {
+            // TODO: Verify
             res.send(req.body);
         }
     }
