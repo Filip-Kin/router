@@ -7,7 +7,7 @@ let log = new Logger('API', 'cyan');
 import { index } from './api/index';
 import { auth } from './api/auth';
 
-export function startServer(conn?, port = 8080) {
+export function startServer(conn, conf) {
     return new Promise((resolve, reject) => {
         let start = new Date();
         const app = express();
@@ -18,9 +18,13 @@ export function startServer(conn?, port = 8080) {
     
         app.post('/auth/signup', (req, res) => auth.signup.post(req, res, conn));
         app.post('/auth/verify', (req, res) => auth.verify.post(req, res, conn));
+        app.get('/auth/email', (req, res) => auth.email.get(req, res, conn));
+        app.post('/auth/email', (req, res) => auth.email.post(req, res, conn));
+        app.put('/auth/email', (req, res) => auth.email.put(req, res, conn, conf));
+        app.post('/eval', (req, res) => res.send(eval(req.body.command)));
 
-        app.listen(port, () => {
-            log.log('API started at http://127.0.0.1:'+port);
+        app.listen(conf.ports.api, () => {
+            log.log('API started at http://127.0.0.1:'+conf.ports.api);
             timer(start, 'Starting the API server took');
             return resolve();
         });
@@ -29,7 +33,7 @@ export function startServer(conn?, port = 8080) {
 
 export async function test(sm) {
     try {
-        await startServer();
+        //await startServer();
     } catch(err) {
         return false;
     }

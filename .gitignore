@@ -5,5 +5,5 @@ out/*
 *.code-workspace
 npm-debug.log
 package-lock.json
-config.json
+config.json*
 .vscode/*

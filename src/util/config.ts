@@ -3,22 +3,40 @@ import { Logger } from './logger';
 const log = new Logger('Config', 'yellow');
 
 const globalDefaultConfig = {
-    config_version: 1,
+    config_version: 4,
+    domain: 'kiwahosting.com',
+    ports: {
+        router: 80,
+        sslRouter: 443,
+        api: 8080
+    },
+    secure: false,
+    addressess: {
+        frontend:'127.0.0.1:8050',
+        docs:'127.0.0.1:8060',
+        mysql:'127.0.0.1:8070',
+        api:'127.0.0.1:8080'
+    },
     database: {
         user: 'hosting',
         password: 'i5@8$XkplQNY9irDD^OxXt@toaEzI2Qs',
         host: '127.0.0.1',
         database: 'hosting'
     },
-    caching: {}
+    caching: {},
+    email: {
+        address: 'noreply@kiwahosting.com',
+        sender: 'Kiwahosting <support@kiwahosting.com>',
+        password: '8IX12w86&sMjC5or32k4'
+    }
 };
 
-export function load(defaultConfig: any=globalDefaultConfig, file='config.json') {  
+export async function load(defaultConfig: any=globalDefaultConfig, file='config.json') {  
     let json = defaultConfig;
     
     // If file doesn't exist, make it exist
     if (!existsSync(file)) {
-        writeFile(file, JSON.stringify(defaultConfig, null, 2), (err) => {
+        await writeFile(file, JSON.stringify(defaultConfig, null, 2), (err) => {
             if (err) { 
                 log.error(err.message);
                 log.warn('The application will continue running assuming default config for ');
@@ -40,9 +58,9 @@ export function load(defaultConfig: any=globalDefaultConfig, file='config.json')
     // If software updateted and things have been added to config
     // Make a new config file and tell user to fix
     if (defaultConfig.config_version > json['config_version']) {
-        log.warn('See updated config in '+file+'.new, any new variables will be assumed to be default');
+        log.warn('See updated config in '+file+'.new, any new variables will be undefined and may break stuff');
         log.warn('To remove this message change the config_version to '+defaultConfig.config_version+' in '+file)
-        writeFile(file+'.new', JSON.stringify(defaultConfig, null, 2), (err) => {
+        await writeFile(file+'.new', JSON.stringify(defaultConfig, null, 2), (err) => {
             if (err) { 
                 log.error(err.message)
             } else {
@@ -51,6 +69,7 @@ export function load(defaultConfig: any=globalDefaultConfig, file='config.json')
         });
     }
     
+    /*
     // Add specific typescript magic if its the main config
     if (file === 'config.json') {
         const database: { [s: string]: string } = json['database'];
@@ -63,6 +82,8 @@ export function load(defaultConfig: any=globalDefaultConfig, file='config.json')
     } else {
         return json;
     }
+    */
+   return json;
 }
 
 export const destroy = (file) => {

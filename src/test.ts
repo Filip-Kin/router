@@ -7,6 +7,7 @@ const load = {
     'config': './util/config',
     'logger': './util/logger',
     'timer': './util/timer',
+    'email': './util/email',
     'api': './api',
     'router': './router'
 };
