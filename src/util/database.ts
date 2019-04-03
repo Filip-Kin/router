@@ -5,6 +5,21 @@ const log = new Logger('SQL', 'green');
 let cache = {};
 let conf;
 
+export function generate(conn) {
+    query(conn, 
+        'CREATE TABLE IF NOT EXISTS `users` ('+
+            '`uuid` VARCHAR(36),'+
+            '`firstName` VARCHAR(255),'+
+            '`lastName` VARCHAR(255),'+
+            '`email` VARCHAR(255),'+
+            '`phone` VARCHAR(15),'+
+            '`password` VARCHAR(64),'+
+            '`signup` TIMESTAMP DEFAULT NOW(),'+
+            '`lastLogin` TIMESTAMP DEFAULT NOW(),'+
+            'PRIMARY KEY (`uuid`)'+
+        ') ENGINE=InnoDB;', false).catch(err => log.error(err.message));
+}
+
 export function connect(config) {
     conf=config;
     return new Promise((resolve, reject) => {
@@ -15,12 +30,7 @@ export function connect(config) {
                 log.debug('Make sure you have your Google Cloud proxy running');
                 return reject(err);
             } else if (err) { log.error(err.message); return reject(err); };
-            /* IDK what data structure will be like yet
-            // Create tables if they don't exist yet
-            tables.forEach(function(sql) {
-                query(conn, sql).then();
-            });
-            */
+            generate(conn);
             log.log('Database connected')
             return resolve(conn);
         });
