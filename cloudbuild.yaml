@@ -1,7 +1,7 @@
 steps:
   - name: gcr.io/cloud-builders/gcloud
-    args: ["compute", "scp", "--zone=us-east1-b", "--recurse", "./src", "./package.json", "./tsconfig", "./router.service", "router:/app"]
+    args: ["compute", "scp", "--zone=us-east1-b", "--recurse", "./src", "./package.json", "./tsconfig", "./router.service", "root@router:/app"]
   - name: gcr.io/cloud-builders/gcloud
-    args: ["compute", "ssh", "--zone=us-east1-b", "router", "--", "'cd /app; npm i; npm run build; sudo systemctl restart router'"]
+    args: ["compute", "ssh", "--zone=us-east1-b", "root@router", "--", "'cd /app; npm i; npm run build; sudo systemctl restart router'"]
   - name: gcr.io/cloud-builders/curl
     args: ["-d", "'{\"embeds\": [{\"title\": \"Deployed backend\",\"description\": \"Deployed build $BUILD_ID\"}]}'", "-X", "POST", "'https://discordapp.com/api/webhooks/563186374136823840/agmBJxLaMLSMqHrDMOxXa522f6CMb_0Xme6smwJtnmlt78P4WJ3lyu3sGlCsKcj3BncN'"]
