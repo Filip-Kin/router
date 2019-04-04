@@ -4,6 +4,7 @@ out/*
 .directory
 *.code-workspace
 npm-debug.log
+cloud_sql_proxy
 package-lock.json
 config.json*
 .vscode/*
