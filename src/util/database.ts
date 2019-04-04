@@ -17,7 +17,15 @@ export function generate(conn) {
             '`signup` TIMESTAMP DEFAULT NOW(),'+
             '`lastLogin` TIMESTAMP DEFAULT NOW(),'+
             'PRIMARY KEY (`uuid`)'+
-        ') ENGINE=InnoDB;', false).catch(err => log.error(err.message));
+        ') ENGINE=InnoDB;'+
+        'CREATE TABLE IF NOT EXISTS `domains` ('+
+            '`uuid` VARCHAR(36),'+
+            '`site` VARCHAR(36),'+
+            '`domain` VARCHAR(255),'+
+            '`path` VARCHAR(255),'+
+            '`server` VARCHAR(255),'+
+            'PRIMARY KEY (`uuid`)'+
+        ') ENGINE=InnoDB;', false).catch(err => {});
 }
 
 export function connect(config) {

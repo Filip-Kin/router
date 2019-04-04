@@ -40,7 +40,7 @@ export async function startRouter(conn=null, conf) {
                     }
                 } else if (!test) {
                     // Handle client requests
-                    let sql = "SELECT * FROM `domains` WHERE `name` = '" + domain + "'";
+                    let sql = "SELECT * FROM `domains` WHERE `domain` = '" + domain + "'";
                     query(conn, sql).then(function(rows) {
                         if (rows == undefined) {
                             log.log('rows undefined');
