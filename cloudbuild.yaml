@@ -1,0 +1,5 @@
+steps:
+  - name: gcr.io/cloud-builders/gcloud
+    args: ["compute", "scp", "./src", "./package.json", "./tsconfig", "./router.service", "router:/app"]
+  - name: gcr.io/cloud-builders/gcloud
+    args: ["compute", "ssh", "router", "--", "'cd /app; npm i; npm run build; sudo systemctl restart router'"]
