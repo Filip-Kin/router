@@ -36,8 +36,24 @@ export const auth = {
     },
     device: {
         get: (req, res, conn) => {
-            // 8: Unimplemented
-            res.send({status: 8});
+            if (!requireInput(req.params, {device: 36})) {
+                // 1: Invalid request
+                log.warn('Rejecting GET /auth/device: 1');
+                res.send({status: 1});
+                timer(req['start'], 'Request took');
+                return;
+            }
+            query(conn, 'SELECT * FROM `devices` WHERE `uuid` = "'+req.params.device+'";').then(rows => {
+                if (JSON.stringify(rows) === '[]') {
+                    // 9: Device does not exist
+                    log.warn('Rejecting GET /auth/device: 9');
+                    res.send({status: 9});
+                } else {
+                    // 0: Successful Request
+                    log.warn('Resolving GET /auth/device: 0');
+                    res.send({status: 0});
+                }
+            });
         },
         post: (req, res, conn) => {
             let did = uuid();
