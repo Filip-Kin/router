@@ -43,7 +43,7 @@ export const auth = {
     },
     email: {
         get: (req, res, conn) => { // Check if email is in use
-            if (!requireInput(req.body, {email: 255})) {
+            if (!requireInput(req.params, {email: 255})) {
                 // 1: Invalid request
                 log.warn('Rejecting GET /auth/email: 1');
                 res.send({status: 1});
