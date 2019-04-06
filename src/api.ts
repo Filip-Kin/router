@@ -18,6 +18,8 @@ export function startServer(conn, conf) {
     
         app.post('/auth/signup', (req, res) => auth.signup.post(req, res, conn));
         app.post('/auth/verify', (req, res) => auth.verify.post(req, res, conn));
+        app.get('/auth/device', (req, res) => auth.device.get(req, res, conn));
+        app.post('/auth/device', (req, res) => auth.device.post(req, res, conn));
         app.get('/auth/email/:email', (req, res) => auth.email.get(req, res, conn));
         app.post('/auth/email', (req, res) => auth.email.post(req, res, conn));
         app.put('/auth/email', (req, res) => auth.email.put(req, res, conn, conf));

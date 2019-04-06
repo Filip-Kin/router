@@ -34,6 +34,26 @@ export const auth = {
             });
         }
     },
+    device: {
+        get: (req, res, conn) => {
+            // 8: Unimplemented
+            res.send({status: 8});
+        },
+        post: (req, res, conn) => {
+            let did = uuid();
+            query(conn, 'INSERT INTO `devices` (`uuid`, `user`) VALUES ("'+did+'", NULL);').then(rows => {
+                // 0: Device id added
+                log.debug('Resolving POST /auth/device: 0');
+                res.send({status: 0, id: did});
+                timer(req['start'], 'Request took');
+            }).catch(err => {
+                // 2: SQL error
+                log.debug('Rejecting POST /auth/device: 2');
+                res.send({status: 2});
+                timer(req['start'], 'Request took');
+            });
+        }
+    },
     verify: {
         post: (req, res, conn) => {
             // TODO: Verify
