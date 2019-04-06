@@ -6,26 +6,34 @@ let cache = {};
 let conf;
 
 export function generate(conn) {
-    query(conn, 
-        'CREATE TABLE IF NOT EXISTS `users` ('+
-            '`uuid` VARCHAR(36),'+
-            '`firstName` VARCHAR(255),'+
-            '`lastName` VARCHAR(255),'+
-            '`email` VARCHAR(255),'+
-            '`phone` VARCHAR(15),'+
-            '`password` VARCHAR(64),'+
-            '`signup` TIMESTAMP DEFAULT NOW(),'+
-            '`lastLogin` TIMESTAMP DEFAULT NOW(),'+
-            'PRIMARY KEY (`uuid`)'+
-        ') ENGINE=InnoDB;'+
-        'CREATE TABLE IF NOT EXISTS `domains` ('+
-            '`uuid` VARCHAR(36),'+
-            '`site` VARCHAR(36),'+
-            '`domain` VARCHAR(255),'+
-            '`path` VARCHAR(255),'+
-            '`server` VARCHAR(255),'+
-            'PRIMARY KEY (`uuid`)'+
-        ') ENGINE=InnoDB;', false).catch(err => {});
+    let tables = ['CREATE TABLE IF NOT EXISTS `users` ('+
+        '`uuid` VARCHAR(36),'+
+        '`firstName` VARCHAR(255),'+
+        '`lastName` VARCHAR(255),'+
+        '`email` VARCHAR(255),'+
+        '`phone` VARCHAR(15),'+
+        '`password` VARCHAR(64),'+
+        '`signup` TIMESTAMP DEFAULT NOW(),'+
+        '`lastLogin` TIMESTAMP DEFAULT NOW(),'+
+        'PRIMARY KEY (`uuid`)'+
+    ') ENGINE=InnoDB;',
+    'CREATE TABLE IF NOT EXISTS `domains` ('+
+        '`uuid` VARCHAR(36),'+
+        '`site` VARCHAR(36),'+
+        '`domain` VARCHAR(255),'+
+        '`path` VARCHAR(255),'+
+        '`server` VARCHAR(255),'+
+        'PRIMARY KEY (`uuid`)'+
+    ') ENGINE=InnoDB;',
+    'CREATE TABLE IF NOT EXISTS `devices` ('+
+        '`uuid` VARCHAR(36),'+
+        '`user` VARCHAR(36),'+
+        'PRIMARY KEY (`uuid`)'+
+    ') ENGINE=InnoDB;'];
+    tables.forEach(sql => {
+        log.debug(sql);
+        query(conn, sql, false).catch(err => {log.warn('Failed table generation')});
+    });
 }
 
 export function connect(config) {
