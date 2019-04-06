@@ -4,6 +4,7 @@ import { query } from '../util/database';
 import { timer } from '../util/timer';
 import { Logger } from '../util/logger';
 import { sendMail } from '../util/email';
+import { getDevice, createDevice } from '../util/auth';
 let log = new Logger('API:auth', 'cyan');
 
 export const auth = {
@@ -43,21 +44,27 @@ export const auth = {
                 timer(req['start'], 'Request took');
                 return;
             }
-            query(conn, 'SELECT * FROM `devices` WHERE `uuid` = "'+req.params.device+'";').then(rows => {
-                if (JSON.stringify(rows) === '[]') {
-                    // 9: Device does not exist
-                    log.warn('Rejecting GET /auth/device: 9');
-                    res.send({status: 9});
-                } else {
+            getDevice(conn, req.params.device).then(status => {
+                if (status === 0) {
                     // 0: Successful Request
                     log.warn('Resolving GET /auth/device: 0');
                     res.send({status: 0});
+                    timer(req['start'], 'Request took');
+                } else {
+                    // 9: Device does not exist
+                    log.warn('Rejecting GET /auth/device: 9');
+                    res.send({status: 9});
+                    timer(req['start'], 'Request took');
                 }
+            }).catch(err => {
+                // 2: SQL Error
+                log.warn('Rejecting GET /auth/device: 2');
+                res.send({status: 2});
+                timer(req['start'], 'Request took');
             });
         },
         post: (req, res, conn) => {
-            let did = uuid();
-            query(conn, 'INSERT INTO `devices` (`uuid`, `user`) VALUES ("'+did+'", NULL);').then(rows => {
+            createDevice(conn).then(did => {
                 // 0: Device id added
                 log.debug('Resolving POST /auth/device: 0');
                 res.send({status: 0, id: did});
