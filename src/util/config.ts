@@ -11,7 +11,7 @@ const globalDefaultConfig = {
         api: 8080
     },
     secure: false,
-    addressess: {
+    addresses: {
         frontend:'127.0.0.1:8050',
         docs:'127.0.0.1:8060',
         mysql:'127.0.0.1:8070',

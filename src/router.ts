@@ -34,7 +34,7 @@ export async function startRouter(conn=null, conf) {
                     for (let subdomain of ['docs', 'api', 'mysql', '']) {
                         if (domain === subdomain+conf.domain) {
                             if (subdomain === '') subdomain = 'frontend';
-                            proxy.web(req, res, {target: (conf.secure)?'https':'http'+'://'+conf.addresses[subdomain]});
+                            proxy.web(req, res, { changeOrigin: true, target: (conf.secure)?'https':'http'+'://'+conf.addresses[subdomain] });
                             log.log('`-----> ' + subdomain + '|');
                         }
                     }
