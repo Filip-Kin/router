@@ -25,15 +25,15 @@ export async function startRouter(conn=null, conf) {
             createServer((req, res) => {
                 let start = new Date();
                 let domain = req.headers.host;
-                if (domain.startsWith('www.')) domain = domain.substring(4);
+                if (domain === conf.domain) domain = 'www.' + domain;
                 let ip = req.connection.remoteAddress;
                 log.log(ip.replace('::ffff:', '') + ' --> ' + domain);
 
                 // Handle internal requests
                 if (domain.endsWith(conf.domain)) {
-                    for (let subdomain of ['docs', 'api', 'mysql', '']) {
-                        if (domain === subdomain+conf.domain) {
-                            if (subdomain === '') subdomain = 'frontend';
+                    for (let subdomain of ['docs', 'api', 'mysql', 'www']) {
+                        if (domain === subdomain+'.'+conf.domain) {
+                            if (subdomain === 'www') subdomain = 'frontend';
                             proxy.web(req, res, { changeOrigin: true, target: (conf.secure)?'https':'http'+'://'+conf.addresses[subdomain] });
                             log.log(subdomain);
                             timer(start, 'Proxy took');
