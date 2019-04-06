@@ -15,19 +15,19 @@ export async function startRouter(conn=null, conf) {
         let proxy = createProxyServer({});
 
         // Catch errors
-        proxy.on('error', function (err, req, res) {
+        proxy.on('error', (err, req, res) => {
             res.write('<html><body><h2>Something went wrong!</h2><p>' + err.message + '</p></body></html>');
             res.end();
         });
 
         // Custom request handler
         try {
-            createServer(function (req, res) {
+            createServer((req, res) => {
                 let start = new Date();
                 let domain = req.headers.host;
                 if (domain.startsWith('www.')) domain = domain.substring(4);
                 let ip = req.connection.remoteAddress;
-                log.log('\n' + ip.replace('::ffff:', '') + ' --> ' + domain);
+                log.log(ip.replace('::ffff:', '') + ' --> ' + domain);
 
                 // Handle internal requests
                 if (domain.endsWith(conf.domain)) {
@@ -35,13 +35,14 @@ export async function startRouter(conn=null, conf) {
                         if (domain === subdomain+conf.domain) {
                             if (subdomain === '') subdomain = 'frontend';
                             proxy.web(req, res, { changeOrigin: true, target: (conf.secure)?'https':'http'+'://'+conf.addresses[subdomain] });
-                            log.log('`-----> ' + subdomain + '|');
+                            log.log(subdomain);
+                            timer(start, 'Proxy took');
                         }
                     }
                 } else if (!test) {
                     // Handle client requests
                     let sql = "SELECT * FROM `domains` WHERE `domain` = '" + domain + "'";
-                    query(conn, sql).then(function(rows) {
+                    query(conn, sql).then(rows => {
                         if (rows == undefined) {
                             log.log('rows undefined');
                             res.write('<html><body><h2>Domain not connected to site</h2>');
@@ -56,12 +57,12 @@ export async function startRouter(conn=null, conf) {
                                 res.end();
                             } else {
                                 let path = (conf.secure)?'https':'http'+'://' + row.server + ':' + row.port + row.path;
-                                log.log('`-----> ' + row.siteid + ' - ' + path + ' |');
+                                log.log(row.siteid + ' - ' + path + ' |');
                                 proxy.web(req, res, {target: path});
                             }
                         }
                         timer(start, 'Proxy took');
-                    }).catch(function(err) {
+                    }).catch(err => {
                         res.write(err.message);
                         res.end();
                         timer(start, 'Proxy took');
@@ -76,7 +77,7 @@ export async function startRouter(conn=null, conf) {
                         }
                         case 'test2': {
                             let path = (conf.secure)?'https':'http'+'://127.0.0.1:8080';
-                            log.log('`-----> ' + 'test2' + ' - ' + path + ' |');
+                            log.log('test2' + ' - ' + path + ' |');
                             proxy.web(req, res, {target: path});
                         }
                     }
