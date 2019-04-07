@@ -37,23 +37,18 @@ export const auth = {
     },
     device: {
         post: (req, res, conn) => {
-            if (!requireInput(req.params, {device: 36})) {
+            if (!requireInput(req.body, {device: 36})) {
                 // 1: Invalid request
                 log.debug('Rejecting GET /auth/device: 1');
                 res.send({status: 1});
                 timer(req['start'], 'Request took');
                 return;
             }
-            getDevice(conn, req.params.device).then(status => {
+            getDevice(conn, req.body.device).then(status => {
                 if (status === 0) {
                     // 0: Successful Request
                     log.debug('Resolving GET /auth/device: 0');
                     res.send({status: 0});
-                    timer(req['start'], 'Request took');
-                } else if (status === 10) {
-                    // 10: Token not connected to account
-                    log.debug('Resolving GET /auth/device: 10');
-                    res.send({status: 10});
                     timer(req['start'], 'Request took');
                 } else {
                     // 9: Device does not exist
