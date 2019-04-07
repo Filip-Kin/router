@@ -4,7 +4,7 @@ import { query } from './database';
 export function getDevice(conn, dt) {
     return new Promise((resolve, reject) => {
         query(conn, 'SELECT * FROM `devices` WHERE `uuid` = "'+dt+'";').then(rows => {
-            resolve((JSON.stringify(rows) === '[]')?9:((rows[0]['user']===null)?10:0));
+            resolve((JSON.stringify(rows) === '[]')?9:0);
         }).catch(err => reject(err));
     })
 }
