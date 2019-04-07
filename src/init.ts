@@ -14,8 +14,7 @@ load().then(conf => {
     connect(conf).then(conn => {
         timer(start, 'Connecting to the database took');
         query(conn, 'SHOW TABLES;')
-        .then(async (rows) => { 
-            //log.debug('Tables in database: '+rows['Tables_in_'+conf.database.database].join(', ')); 
+        .then(async (rows) => {
             log.log('Initializing Router');
             await startRouter(conn, conf);
             log.log('Initializing API Server');

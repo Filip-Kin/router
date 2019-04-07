@@ -12,7 +12,7 @@ export const auth = {
         post: (req, res, conn) => {
            if (!requireInput(req.body, {password: 64, email: 255, firstName: 255, lastName: 255})) {
                 // 1: Invalid request
-                log.warn('Rejecting POST /auth/signup: 1');
+                log.debug('Rejecting POST /auth/signup: 1');
                 res.send({status: 1});
                 timer(req['start'], 'Request took');
                 return;
@@ -29,7 +29,7 @@ export const auth = {
                 timer(req['start'], 'Request took');
             }).catch(err => {
                 // 2: SQL error
-                log.warn('Rejecting POST /auth/signup: 2');
+                log.debug('Rejecting POST /auth/signup: 2');
                 res.send({status: 2})
                 timer(req['start'], 'Request took');
             });
@@ -39,7 +39,7 @@ export const auth = {
         get: (req, res, conn) => {
             if (!requireInput(req.params, {device: 36})) {
                 // 1: Invalid request
-                log.warn('Rejecting GET /auth/device: 1');
+                log.debug('Rejecting GET /auth/device: 1');
                 res.send({status: 1});
                 timer(req['start'], 'Request took');
                 return;
@@ -47,18 +47,23 @@ export const auth = {
             getDevice(conn, req.params.device).then(status => {
                 if (status === 0) {
                     // 0: Successful Request
-                    log.warn('Resolving GET /auth/device: 0');
+                    log.debug('Resolving GET /auth/device: 0');
                     res.send({status: 0});
+                    timer(req['start'], 'Request took');
+                } else if (status === 10) {
+                    // 10: Token not connected to account
+                    log.debug('Resolving GET /auth/device: 10');
+                    res.send({status: 10});
                     timer(req['start'], 'Request took');
                 } else {
                     // 9: Device does not exist
-                    log.warn('Rejecting GET /auth/device: 9');
+                    log.debug('Rejecting GET /auth/device: 9');
                     res.send({status: 9});
                     timer(req['start'], 'Request took');
                 }
             }).catch(err => {
                 // 2: SQL Error
-                log.warn('Rejecting GET /auth/device: 2');
+                log.debug('Rejecting GET /auth/device: 2');
                 res.send({status: 2});
                 timer(req['start'], 'Request took');
             });
@@ -88,7 +93,7 @@ export const auth = {
         get: (req, res, conn) => { // Check if email is in use
             if (!requireInput(req.params, {email: 255})) {
                 // 1: Invalid request
-                log.warn('Rejecting GET /auth/email: 1');
+                log.debug('Rejecting GET /auth/email: 1');
                 res.send({status: 1});
                 timer(req['start'], 'Request took');
                 return;
@@ -103,7 +108,7 @@ export const auth = {
                 timer(req['start'], 'Request took');
             }).catch(err => {
                 // 2: SQL error
-                log.warn('Rejecting GET /auth/email: 2');
+                log.debug('Rejecting GET /auth/email: 2');
                 res.send({status: 2});
                 timer(req['start'], 'Request took');
             });
@@ -116,7 +121,7 @@ export const auth = {
         put: (req, res, conn, conf) => { // Get new email
             if (!requireInput(req.body, {email: 255})) {
                 // 1: Invalid request
-                log.warn('Rejecting POST /auth/email: 1');
+                log.debug('Rejecting POST /auth/email: 1');
                 res.send({status: 1});
                 timer(req['start'], 'Request took');
                 return;
@@ -133,7 +138,7 @@ export const auth = {
             }).catch(err => {
                 // 6: Email server rejected authentication
                 // 7: Email failed to send
-                log.warn('Rejecting PUT /auth/email: '+err);
+                log.debug('Rejecting PUT /auth/email: '+err);
                 res.send({status: err});
                 timer(req['start'], 'Request took');
             });

@@ -82,6 +82,7 @@ export function query(conn, sql, useCache=true) {
         conn.query(sql, function(err, rows) {
             if (err) { log.error(err.message); reject(err); }
             resolve(rows);
+            log.debug(JSON.stringify(rows));
             // Check to see if I should cache this result
             let table = sql.match(/SELECT (.+) FROM `(.+)` WHERE .+/);
             if (sql.startsWith('SELECT') && Object.keys(conf.caching).toString().includes(table[2])) {
