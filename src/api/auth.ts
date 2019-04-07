@@ -36,7 +36,7 @@ export const auth = {
         }
     },
     device: {
-        get: (req, res, conn) => {
+        post: (req, res, conn) => {
             if (!requireInput(req.params, {device: 36})) {
                 // 1: Invalid request
                 log.debug('Rejecting GET /auth/device: 1');
@@ -68,7 +68,7 @@ export const auth = {
                 timer(req['start'], 'Request took');
             });
         },
-        post: (req, res, conn) => {
+        get: (req, res, conn) => {
             createDevice(conn).then(did => {
                 // 0: Device id added
                 log.debug('Resolving POST /auth/device: 0');
