@@ -4,7 +4,7 @@ import { query } from '../util/database';
 import { timer } from '../util/timer';
 import { Logger } from '../util/logger';
 import { sendMail } from '../util/email';
-import { getDevice, createDevice, emailInUse } from '../util/auth';
+import { getDevice, createDevice, emailInUse, verify } from '../util/auth';
 let log = new Logger('API:auth', 'cyan');
 
 export const auth = {
@@ -44,8 +44,8 @@ export const auth = {
                 timer(req['start'], 'Request took');
                 return;
             }
-            getDevice(conn, req.body.device).then(status => {
-                if (status === 0) {
+            getDevice(conn, req.body.device).then(result => {
+                if (result !== null) {
                     // 0: Successful Request
                     log.debug('Resolving GET /auth/device: 0');
                     res.send({status: 0});
@@ -79,9 +79,26 @@ export const auth = {
     },
     verify: {
         post: (req, res, conn) => {
-            // TODO: Verify
-            // 8: Unimplemented
-            res.send({status: 8});
+            if (!requireInput(req.body, {token: 77})) {
+                // 1: Invalid request
+                log.debug('Rejecting GET /auth/verify: 1');
+                res.send({status: 1});
+                timer(req['start'], 'Request took');
+                return;
+            }
+            verify(conn, req.body.token).then(result => {
+                // 0: Token is valid
+                log.debug('Resolving GET /auth/verify: 0');
+                res.send({status: 0});
+                timer(req['start'], 'Request took');
+            }).catch(err => {
+                // 2: SQL Error
+                // 9: Device invalid
+                // 10: Token invalid
+                log.debug('Rejecting GET /auth/verify: '+err);
+                res.send({status: err});
+                timer(req['start'], 'Request took');
+            })
         }
     },
     email: {
@@ -153,8 +170,6 @@ export const auth = {
                 res.send({status: 2});
                 timer(req['start'], 'Request took');
             });
-            // 8: Unimplemented
-            res.send({status: 8});
         },
         put: (req, res, conn, conf) => { // Get new email
             if (!requireInput(req.body, {email: 255, user: 36})) {
