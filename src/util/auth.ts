@@ -17,3 +17,15 @@ export function createDevice(conn) {
         }).catch(err => reject(err));
     });
 }
+
+export function emailInUse(conn, email) {
+    return new Promise((resolve, reject) => {
+        query(conn, 'SELECT * FROM `users` WHERE `email`="'+email+'"').then(rows => {
+            let status = false;
+            if (JSON.stringify(rows) !== '[]') status = true;
+            resolve(status)
+        }).catch(err => {
+            reject(err)
+        });
+    });
+}

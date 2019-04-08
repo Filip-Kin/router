@@ -14,7 +14,7 @@ export function generate(conn) {
         '`phone` VARCHAR(15),'+
         '`password` VARCHAR(64),'+
         '`signup` TIMESTAMP DEFAULT NOW(),'+
-        '`lastLogin` TIMESTAMP DEFAULT NOW(),'+
+        '`lastLogin` TIMESTAMP DEFAULT NULL,'+
         'PRIMARY KEY (`uuid`)'+
     ') ENGINE=InnoDB;',
     'CREATE TABLE IF NOT EXISTS `domains` ('+
@@ -29,7 +29,14 @@ export function generate(conn) {
         '`uuid` VARCHAR(36),'+
         '`user` VARCHAR(36),'+
         'PRIMARY KEY (`uuid`)'+
-    ') ENGINE=InnoDB;'];
+    ') ENGINE=InnoDB;',
+    'CREATE TABLE IF NOT EXISTS `emailVerification` ('+
+        '`uuid` VARCHAR(36),'+
+        '`user` VARCHAR(36),'+
+        '`email` VARCHAR(255),'+
+        '`expires` DATETIME DEFAULT NOW()'+
+        'PRIMARY KEY (`uuid`)'+
+    ') ENGINE=InnoDB'];
     tables.forEach(sql => {
         log.debug(sql);
         query(conn, sql, false).catch(err => {log.warn('Failed table generation')});
