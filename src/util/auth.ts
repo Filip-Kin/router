@@ -52,7 +52,7 @@ export function getPassword(conn, user) {
 
 export function getTime() {
     let time = Math.floor((new Date).getTime()/10000)*10000;
-    return [time, time+10000];
+    return [time, time-10000];
 }
 
 export function generatePD(password, device) {

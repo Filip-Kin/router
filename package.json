@@ -32,6 +32,7 @@
     "interval": "^0.1.1",
     "mysql": "^2.16.0",
     "nodemailer": "^6.0.0",
+    "sha1": "^1.1.1",
     "twilio": "^3.30.0",
     "typescript": "^3.3.3333",
     "uuidv4": "^3.0.1"

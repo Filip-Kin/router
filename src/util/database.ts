@@ -14,7 +14,7 @@ export function generate(conn) {
         '`phone` VARCHAR(15),'+
         '`password` VARCHAR(64),'+
         '`signup` TIMESTAMP DEFAULT NOW(),'+
-        '`lastLogin` TIMESTAMP DEFAULT NULL,'+
+        '`lastLogin` TIMESTAMP NULL DEFAULT NULL,'+
         'PRIMARY KEY (`uuid`)'+
     ') ENGINE=InnoDB;',
     'CREATE TABLE IF NOT EXISTS `domains` ('+
@@ -34,7 +34,7 @@ export function generate(conn) {
         '`uuid` VARCHAR(36),'+
         '`user` VARCHAR(36),'+
         '`email` VARCHAR(255),'+
-        '`expires` DATETIME DEFAULT NOW()'+
+        '`expires` DATETIME DEFAULT NOW(),'+
         'PRIMARY KEY (`uuid`)'+
     ') ENGINE=InnoDB'];
     tables.forEach(sql => {
