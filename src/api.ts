@@ -11,6 +11,7 @@ export function startServer(conn, conf) {
     return new Promise((resolve, reject) => {
         let start = new Date();
         const app = express();
+        app.use((req, res, next) => { res.setHeader('Access-Control-Allow-Origin', '*'); next(); });
         app.use((req, res, next) => { req['start'] = new Date(); next(); });
         app.use(parseBody());
     
