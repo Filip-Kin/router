@@ -17,6 +17,7 @@ export function startServer(conn, conf) {
         app.get('/', (req, res) => index.get(req, res));
     
         app.post('/auth/signup', (req, res) => auth.signup.post(req, res, conn));
+        app.post('/auth/signin', (req, res) => auth.signin.post(req, res, conn));
         app.post('/auth/verify', (req, res) => auth.verify.post(req, res, conn));
         app.get('/auth/device', (req, res) => auth.device.get(req, res, conn));
         app.post('/auth/device', (req, res) => auth.device.post(req, res, conn));
