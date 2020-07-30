@@ -1,5 +1,6 @@
 import { createServer } from 'http';
 import { createProxyServer } from 'http-proxy';
+import * as cf from 'node_cloudflare';
 import { timer } from './util/timer';
 import { query } from './util/database';
 import { Logger } from './util/logger';
@@ -22,12 +23,14 @@ export async function startRouter(conn=null, conf) {
 
         // Custom request handler
         try {
-            createServer((req, res) => {
+            let server = createServer((req, res) => {
                 let start = new Date();
                 let domain = req.headers.host;
                 if (domain === conf.domain) domain = 'www.' + domain;
-                let ip = req.connection.remoteAddress;
-                log.log(ip.replace('::ffff:', '') + ' --> ' + domain);
+                let ip = (cf.check(req))? cf.get(req):req.connection.remoteAddress;
+                ip = ip.replace('::ffff:', '127.0.0.1').replace('::1', '127.0.0.1');
+                req.headers['origin-ip'] = ip;
+                log.log(ip + ' --> ' + domain);
 
                 // Handle internal requests
                 if (domain.endsWith(conf.domain)) {
@@ -82,7 +85,13 @@ export async function startRouter(conn=null, conf) {
                         }
                     }
                 }
-            }).listen(port)
+            })
+            cf.load((err, fs_err) => {
+                if (fs_err) {
+                    throw new Error(fs_err);
+                }
+                server.listen(port);
+            });
         } catch (err) {
             if (err) {
                 log.error(err.message);

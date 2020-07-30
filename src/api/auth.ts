@@ -4,7 +4,7 @@ import { query } from '../util/database';
 import { timer } from '../util/timer';
 import { Logger } from '../util/logger';
 import { sendMail } from '../util/email';
-import { getDevice, createDevice, emailInUse, verify } from '../util/auth';
+import { getDevice, createDevice, emailInUse, verify, signin } from '../util/auth';
 let log = new Logger('API:auth', 'cyan');
 
 export const auth = {
@@ -99,6 +99,32 @@ export const auth = {
                 res.send({status: err});
                 timer(req['start'], 'Request took');
             })
+        }
+    },
+    signin: {
+        post: (req, res, conn) => {
+            if (!requireInput(req.body, {email: 255, token: 77})) {
+                // 1: Invalid request
+                log.debug('Rejecting POST /auth/signin: 1');
+                res.send({status: 1});
+                timer(req['start'], 'Request took');
+                return;
+            }
+            signin(conn, req.body.email, req.body.token).then(result => {
+                // 0: Signin successful
+                log.debug('Resolving POST /auth/signin: 0');
+                res.send({status: 0});
+                timer(req['start'], 'Request took');
+            }).catch(err => {
+                // 2: SQL Error
+                // 9: Device invalid
+                // 10: Token invalid
+                // 11: No account found using email
+                // 15: One account per device
+                log.debug('Rejecting POST /auth/signin: '+err);
+                res.send({status: err});
+                timer(req['start'], 'Request took');
+            });
         }
     },
     email: {
